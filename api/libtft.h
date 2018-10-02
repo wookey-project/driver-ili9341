@@ -2,7 +2,7 @@
 #define LIBTFT_H_
 
 #include "api/types.h"
-#include "goodusb_spi_arbitrer.h"
+#include "spi_arbitrer.h"
 
 #define UP_CX sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 14),1);
 #define DOWN_CX sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 14),0);
