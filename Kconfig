@@ -1,0 +1,9 @@
+config USR_DRV_TFT
+  bool  "userspace ILI9341 driver"
+  default y
+  ---help---
+  Support for ILI9341 hardware Screen driver.
+config USR_DRV_TFT_CFLAGS
+  string
+  default " -I../../drivers/socs/stm32f439/tft/api " if USR_DRV_TFT
+
