@@ -215,7 +215,6 @@ void tft_setxy_unlocked(int x1, int x2, int y1, int y2)
 }
 void tft_fill_rectangle(int x1, int x2, int y1, int y2, uint8_t r, uint8_t g, uint8_t b)
 {
-  //int i;
 //Clear B_CS dans P_CS
 
         tft_setxy(x1,x2,y1,y2);
@@ -225,7 +224,7 @@ lock_bus(1);
  // set_reg_bits(GPIOA_ODR,D_CX_BIT); /* send the parameter */
  DOWN_NSS;
  UP_CX;
-#if 1
+#if 0
    {
     uint8_t rgb[300];
     int i;
@@ -239,12 +238,15 @@ lock_bus(1);
     spi1_master_send_bytes_async_circular(rgb,(300>i?i:300),i);
    }
 #else
+  {
+    int i;
      for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
   {
        spi_master_send_byte_sync(1,r);
        spi_master_send_byte_sync(1,g);
        spi_master_send_byte_sync(1,b);
    }
+}
 #endif
 UP_NSS;
 unlock_bus();
@@ -268,14 +270,16 @@ void tft_fill_rectangle_unlocked(int x1, int x2, int y1, int y2, uint8_t r, uint
  // set_reg_bits(GPIOA_ODR,D_CX_BIT); /* send the parameter */
  DOWN_NSS;
  UP_CX;
-#if 0
-  int i;
+#if 1
+ {
+ int i;
   for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
   {
        spi_master_send_byte_sync(1,r);
        spi_master_send_byte_sync(1,g);
        spi_master_send_byte_sync(1,b);
    }
+}
 #else
         {
     uint8_t rgb[1800];

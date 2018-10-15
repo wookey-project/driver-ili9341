@@ -18,8 +18,7 @@ CFLAGS += $(DRIVERS_CFLAGS)
 CFLAGS += -I$(PROJ_FILES)/include/generated -I$(PROJ_FILES) -I$(PROJ_FILES)/libs/std -I. -Iapi
 CFLAGS += -I$(PROJ_FILES)/drivers/socs/stm32f439/touch
 CFLAGS += -I$(PROJ_FILES)/drivers/socs/stm32f439/spi
-CFLAGS += -MMD -MP
-CFLAGS += -fno-pie -O0
+CFLAGS += -MMD -MP -Os
 
 LDFLAGS += -fno-builtin -nostdlib -nostartfiles
 LD_LIBS +=
