@@ -16,7 +16,7 @@ CFLAGS := $(DEBUG_CFLAGS) $(WARN_CFLAGS) $(EMBED_CFLAGS) $(AFLAGS)
 CFLAGS += -ffreestanding
 CFLAGS += $(DRIVERS_CFLAGS)
 CFLAGS += -I$(PROJ_FILES)/include/generated -I$(PROJ_FILES) -I$(PROJ_FILES)/libs/std -I. -Iapi
-CFLAGS += -I$(PROJ_FILES)/drivers/socs/stm32f439/touch
+CFLAGS += -I$(PROJ_FILES)/drivers/socs/stm32f439/ad7843
 CFLAGS += -I$(PROJ_FILES)/drivers/socs/stm32f439/spi
 CFLAGS += -MMD -MP -Os
 
