@@ -536,7 +536,7 @@ void tft_rle_image(int x, int y,int width, int height, const uint8_t *colormap,
 {
   int i;
   lock_bus(1);
-  tft_setxy_unlocked(x,x+width,y,y+height);
+  tft_setxy_unlocked(x,x+width - 1,y,y+height - 1);
   tft_send_command(0x2c);
   UP_CX;
   DOWN_NSS;
