@@ -40,11 +40,11 @@ static void power_up(void)
      * After a data write, data cannot be written to this register for three SDIOCLK (48 MHz) clock
      * periods plus two PCLK2 clock periods.
      */
-
      sys_get_systick(&i,PREC_CYCLE);
      printf("debut %x\n",(uint32_t)i);
-	for (; (i+1680000)>ii;
-		sys_get_systick(&ii,PREC_CYCLE));
+     for (; (i+1680000)>ii; ) {
+         sys_get_systick(&ii,PREC_CYCLE);
+     }
      printf("fin %x\n",(uint32_t)ii);
 	//LOG("Power up !\n");
 }
@@ -69,7 +69,8 @@ uint8_t tft_early_init(void)
     /*******************************
      * first, SDIO device declaration
      *******************************/
-    device_t dev = { 0 };
+    device_t dev;
+    memset((void*)&dev, 0, sizeof(device_t));
     int devdesc;
 
     /*
