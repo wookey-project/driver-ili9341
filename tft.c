@@ -112,7 +112,7 @@ uint8_t tft_init(void)
     sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 15),0); 
     for(i=0;i<1000;i++);
     spi1_init();
-    spi_enable(1);
+    spi1_enable();
 
     sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 15),1); 
     for(i=0;i<1000;i++);
@@ -166,7 +166,7 @@ int tft_send_command(uint8_t command)
   DOWN_NSS;
   DOWN_CX;
   /* send the command */
-  res=spi_master_send_byte_sync(1,command);
+  res=spi1_master_send_byte_sync(command);
   UP_NSS;
   return res;
 }
@@ -180,7 +180,7 @@ int tft_send_param(uint8_t param)
   DOWN_NSS;
   UP_CX;
   /* send the parameter */
-  res=spi_master_send_byte_sync(1,param);
+  res=spi1_master_send_byte_sync(param);
   UP_NSS;
   return res;
 }
@@ -243,9 +243,9 @@ lock_bus(1);
     int i;
      for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
   {
-       spi_master_send_byte_sync(1,r);
-       spi_master_send_byte_sync(1,g);
-       spi_master_send_byte_sync(1,b);
+       spi1_master_send_byte_sync(r);
+       spi1_master_send_byte_sync(g);
+       spi1_master_send_byte_sync(b);
    }
 }
 #endif
@@ -276,9 +276,9 @@ void tft_fill_rectangle_unlocked(int x1, int x2, int y1, int y2, uint8_t r, uint
  int i;
   for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
   {
-       spi_master_send_byte_sync(1,r);
-       spi_master_send_byte_sync(1,g);
-       spi_master_send_byte_sync(1,b);
+       spi1_master_send_byte_sync(r);
+       spi1_master_send_byte_sync(g);
+       spi1_master_send_byte_sync(b);
    }
 }
 #else
@@ -314,17 +314,17 @@ void tft_invert_rectangle_unlocked(int x1,int x2,int y1,int y2)
 
         DOWN_NSS;
         UP_CX;
-        spi_master_send_byte_sync(1,0);//dummy READ as in spec p116
+        spi1_master_send_byte_sync(0);//dummy READ as in spec p116
         for(k=0;k<3*sup;k++)
           {
-            stock[k]=spi_master_send_byte_sync(1,0);//0 is dummy data
+            stock[k]=spi1_master_send_byte_sync(0);//0 is dummy data
           }
         tft_setxy_unlocked(i,i+sup,j,j+1);
         tft_send_command(0x2c);//memory write
         DOWN_NSS;
         UP_CX;
         for(k=0;k<3*sup;k++)
-          spi_master_send_byte_sync(1,(stock[k])^255);//Ensure the 3 lsb are 0
+          spi1_master_send_byte_sync((stock[k])^255);//Ensure the 3 lsb are 0
         UP_NSS;
         }
   }
@@ -341,9 +341,9 @@ void tft_send_image(int x1,int x2, int y1,int y2, uint8_t *data)
   UP_CX;
   for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
     {
-      spi_master_send_byte_sync(1,data[3*i]);
-      spi_master_send_byte_sync(1,data[3*i+1]);
-      spi_master_send_byte_sync(1,data[3*i+2]);
+      spi1_master_send_byte_sync(data[3*i]);
+      spi1_master_send_byte_sync(data[3*i+1]);
+      spi1_master_send_byte_sync(data[3*i+2]);
     }
   UP_NSS;
   unlock_bus();
@@ -360,9 +360,9 @@ void tft_send_image_unlocked(int x1,int x2, int y1,int y2, uint8_t *data)
   UP_CX;
   for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
     {
-      spi_master_send_byte_sync(1,data[3*i]);
-      spi_master_send_byte_sync(1,data[3*i+1]);
-      spi_master_send_byte_sync(1,data[3*i+2]);
+      spi1_master_send_byte_sync(data[3*i]);
+      spi1_master_send_byte_sync(data[3*i+1]);
+      spi1_master_send_byte_sync(data[3*i+2]);
     }
   UP_NSS;
   //  spi1_master_send_bytes_async(data,length);
@@ -420,15 +420,15 @@ void tft_putc(char c)
             {
               if(font[star_pos+j]&(1<<k))
               {
-                spi_master_send_byte_sync(1,fg_color[0]);
-                spi_master_send_byte_sync(1,fg_color[1]);
-                spi_master_send_byte_sync(1,fg_color[2]);
+                spi1_master_send_byte_sync(fg_color[0]);
+                spi1_master_send_byte_sync(fg_color[1]);
+                spi1_master_send_byte_sync(fg_color[2]);
               }
               else
               {
-                spi_master_send_byte_sync(1,bg_color[0]);
-                spi_master_send_byte_sync(1,bg_color[1]);
-                spi_master_send_byte_sync(1,bg_color[2]);
+                spi1_master_send_byte_sync(bg_color[0]);
+                spi1_master_send_byte_sync(bg_color[1]);
+                spi1_master_send_byte_sync(bg_color[2]);
               }
               size_printed++;
             }
@@ -491,15 +491,15 @@ void tft_putc_unlocked(char c)
            {
               if(font[star_pos+j]&(1<<k))
               {
-                spi_master_send_byte_sync(1,fg_color[0]);
-                spi_master_send_byte_sync(1,fg_color[1]);
-                spi_master_send_byte_sync(1,fg_color[2]);
+                spi1_master_send_byte_sync(fg_color[0]);
+                spi1_master_send_byte_sync(fg_color[1]);
+                spi1_master_send_byte_sync(fg_color[2]);
               }
               else
               {
-                spi_master_send_byte_sync(1,bg_color[0]);
-                spi_master_send_byte_sync(1,bg_color[1]);
-                spi_master_send_byte_sync(1,bg_color[2]);
+                spi1_master_send_byte_sync(bg_color[0]);
+                spi1_master_send_byte_sync(bg_color[1]);
+                spi1_master_send_byte_sync(bg_color[2]);
               }
               size_printed++;
             }
@@ -546,9 +546,9 @@ void tft_rle_image(int x, int y,int width, int height, const uint8_t *colormap,
         int nb;
         for(nb=0;nb<data[i+1];nb++)
         {
-                spi_master_send_byte_sync(1,colormap[3*data[i]]&~7);
-                spi_master_send_byte_sync(1,colormap[3*data[i]+1]&~7);
-                spi_master_send_byte_sync(1,colormap[3*data[i]+2]&~7);
+                spi1_master_send_byte_sync(colormap[3*data[i]]&~7);
+                spi1_master_send_byte_sync(colormap[3*data[i]+1]&~7);
+                spi1_master_send_byte_sync(colormap[3*data[i]+2]&~7);
         }
   }
   UP_NSS;
