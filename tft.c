@@ -1,3 +1,4 @@
+#include "autoconf.h"
 #include "api/types.h"
 #include "kernel/exported/devices.h"
 #include "kernel/exported/dmas.h"
@@ -89,7 +90,7 @@ uint8_t tft_early_init(void)
         dev.gpios[0].pupd         = GPIO_PULLUP;
         dev.gpios[0].type         = GPIO_PIN_OTYPER_OD;
         dev.gpios[0].speed        = GPIO_PIN_VERY_HIGH_SPEED;
-   
+
     /* DECLARE TFT RESET GPIO_PD15  */
         dev.gpios[1].mask         = GPIO_MASK_SET_MODE | GPIO_MASK_SET_PUPD | GPIO_MASK_SET_TYPE | GPIO_MASK_SET_SPEED;
         dev.gpios[1].kref.port    = GPIO_PD;
@@ -109,16 +110,16 @@ uint8_t tft_init(void)
     volatile int i;
 
 
-    sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 15),0); 
+    sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 15),0);
     for(i=0;i<1000;i++);
     spi1_init();
     spi1_enable();
 
-    sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 15),1); 
+    sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 15),1);
     for(i=0;i<1000;i++);
-    
+
     tft_send_command(0x1);//Soft RESET
-    
+
     //FIXME: Should be sleep Here
     for(i=0;i<10000;i++);
 
