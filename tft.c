@@ -1,7 +1,5 @@
 #include "autoconf.h"
 #include "api/types.h"
-#include "kernel/exported/devices.h"
-#include "kernel/exported/dmas.h"
 #include "api/libtft.h"
 #include "api/libspi.h"
 #include "api/print.h"
