@@ -1,4 +1,4 @@
-LIB_NAME ?= libtft
+LIB_NAME ?= libili9341
 
 PROJ_FILES = ../../../../
 LIB_FULL_NAME = $(LIB_NAME).a
