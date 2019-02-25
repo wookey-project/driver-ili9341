@@ -441,9 +441,9 @@ void tft_putc(char c)
         current_posx+=char_width;
 
 }
-int tft_puts(char *s)
+int tft_puts(const char *s)
 {
-  char *tmp=s;
+  const char *tmp=s;
   while(*s)
     tft_putc(*(s++));
   return s-tmp;
