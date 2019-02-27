@@ -23,7 +23,7 @@ void tft_send_image(int x1,int x2, int y1,int y2, uint8_t *data);
 void tft_send_image_unlocked(int x1,int x2, int y1,int y2, uint8_t *data);
 void tft_set_cursor_pos(int x,int y);
 void tft_putc(char c);
-int tft_puts(char *s);
+int tft_puts(const char *s);
 void tft_putc_unlocked(char c);
 int tft_puts_unlocked(char *s);
 void tft_setfg(uint8_t r, uint8_t g, uint8_t b);
@@ -34,4 +34,4 @@ void screen_save_nss_status();
 void screen_restore_nss_status();
 
 
-#endif 
+#endif
