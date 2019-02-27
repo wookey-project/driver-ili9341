@@ -28,6 +28,22 @@ static uint8_t bg_color[3]={0,0,0};
 /***********************************************
  * SDIO block startup function
  ***********************************************/
+void tft_flush_fifo()
+{
+  sys_sleep(10, SLEEP_MODE_INTERRUPTIBLE);
+  tft_setxy(0,99,0,99);
+  tft_send_command(0x2c);
+  UP_CX;
+  DOWN_NSS;
+  for(volatile int i=0;i<100*50;i++)
+  {
+       spi1_master_send_byte_sync(0);
+       spi1_master_send_byte_sync(250);
+       spi1_master_send_byte_sync(0);
+    
+  }
+  sys_sleep(1000, SLEEP_MODE_INTERRUPTIBLE);
+}
 
 static void power_up(void)
 {
@@ -114,8 +130,8 @@ uint8_t tft_init(void)
     spi1_enable();
 
     sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 15),1);
-    for(i=0;i<1000;i++);
 
+    for(i=0;i<1000;i++);
     tft_send_command(0x1);//Soft RESET
 
     //FIXME: Should be sleep Here
@@ -148,9 +164,9 @@ uint8_t tft_init(void)
     tft_send_param(0x66);//0x66 = 18bits
 
     tft_send_command(0x11);//ILI9341_SLEEPOUT
-    for(i=0;i<100000;i++);
+    for(i=0;i<10000;i++);
     tft_send_command(0x29);//ILI9341_DISPLAYON
-    for(i=0;i<200000;i++);
+    sys_sleep(20, SLEEP_MODE_DEEP);
 
     return 0;
 }
@@ -534,10 +550,10 @@ void tft_setbg(uint8_t r, uint8_t g, uint8_t b)
 void tft_rle_image(int x, int y,int width, int height, const uint8_t *colormap,
                    const uint8_t *data, int datalen)
 {
-  int i;
+   int i;
   lock_bus(1);
   tft_setxy_unlocked(x,x+width - 1,y,y+height - 1);
-  tft_send_command(0x2c);
+  tft_send_command(0x2c); /* Meomory Write */
   UP_CX;
   DOWN_NSS;
   for(i=0;i<datalen;i+=2)
@@ -545,9 +561,10 @@ void tft_rle_image(int x, int y,int width, int height, const uint8_t *colormap,
         int nb;
         for(nb=0;nb<data[i+1];nb++)
         {
-                spi1_master_send_byte_sync(colormap[3*data[i]]&~7);
-                spi1_master_send_byte_sync(colormap[3*data[i]+1]&~7);
-                spi1_master_send_byte_sync(colormap[3*data[i]+2]&~7);
+                  
+                spi1_master_send_byte_sync(colormap[3*data[i]]&~3);
+                spi1_master_send_byte_sync(colormap[3*data[i]+1]&~3);
+                spi1_master_send_byte_sync(colormap[3*data[i]+2]&~3);
         }
   }
   UP_NSS;
