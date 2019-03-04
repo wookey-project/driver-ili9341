@@ -32,6 +32,7 @@ void tft_rle_image(int x, int y,int width, int height, const uint8_t *colormap,
                    const uint8_t *data, int datalen);
 void screen_save_nss_status();
 void screen_restore_nss_status();
+void tft_flush_fifo();
 
 
 #endif
