@@ -2,12 +2,7 @@
 #define LIBTFT_H_
 
 #include "api/types.h"
-#include "spi_arbitrer.h"
 
-#define UP_CX sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 14),1);
-#define DOWN_CX sys_cfg(CFG_GPIO_SET,(uint8_t)((('D' - 'A') << 4) + 14),0);
-
-#define TFT_BUFSIZ 1000
 
 uint8_t tft_early_init(void);
 uint8_t tft_init(void);
