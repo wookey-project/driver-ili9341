@@ -415,8 +415,9 @@ int tft_puts(const char *s)
   const char *tmp=s;
   while(*s) {
       if (tft_is_printable(*s)) {
-        tft_putc(*(s++));
+        tft_putc(*(s));
       }
+      s++;
   }
   return s-tmp;
 }
