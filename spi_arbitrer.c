@@ -21,10 +21,10 @@ int try_lock_bus(char id)
 
 void unlock_bus()
 {
-  bus_owner=0;  
+  bus_owner=0;
 }
 
 void clear_wait(char id)
 {
-	wait_queue&=~(1<<(id-1)); 
+	wait_queue&=~(1<<(id-1));
 }

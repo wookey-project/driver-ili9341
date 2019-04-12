@@ -106,9 +106,17 @@ uint8_t tft_init(void)
   /* start RESET EVERYTHING */
     sys_cfg(CFG_GPIO_SET,(uint8_t)((ili9341_dev_infos.gpios[TFT_RST].port<<4)+
             ili9341_dev_infos.gpios[TFT_RST].pin),0);
+#if CONFIG_WOOKEY_V1
     spi1_init();
+#elif CONFIG_WOOKEY_V2
+    spi2_init();
+#endif
     sys_sleep(10, SLEEP_MODE_DEEP);
+#if CONFIG_WOOKEY_V1
     spi1_enable();
+#elif CONFIG_WOOKEY_V2
+    spi2_enable();
+#endif
 
   /* end RESET EVERYTHING */
     sys_cfg(CFG_GPIO_SET,(uint8_t)((ili9341_dev_infos.gpios[TFT_RST].port<<4)+
@@ -158,12 +166,20 @@ int tft_send_command(uint8_t command)
 {
   int res;
   /* Wait for any already launched SPI transfert to complete */
+#if CONFIG_WOOKEY_V1
   while(spi1_is_busy());
+#elif CONFIG_WOOKEY_V2
+  while(spi2_is_busy());
+#endif
   /*DOWN the D/CX line */
   DOWN_TFT_NSS;
   DOWN_CX;
   /* send the command */
+#if CONFIG_WOOKEY_V1
   res=spi1_master_send_byte_sync(command);
+#elif CONFIG_WOOKEY_V2
+  res=spi2_master_send_byte_sync(command);
+#endif
   UP_TFT_NSS;
   return res;
 }
@@ -172,12 +188,20 @@ int tft_send_param(uint8_t param)
 {
   int res;
   /* Wait for any already launched SPI transfert to complete */
+#if CONFIG_WOOKEY_V1
   while(spi1_is_busy());
+#elif CONFIG_WOOKEY_V2
+  while(spi2_is_busy());
+#endif
   /*UP the D/CX line */
   DOWN_TFT_NSS;
   UP_CX;
   /* send the parameter */
+#if CONFIG_WOOKEY_V1
   res=spi1_master_send_byte_sync(param);
+#elif CONFIG_WOOKEY_V2
+  res=spi2_master_send_byte_sync(param);
+#endif
   UP_TFT_NSS;
   return res;
 }
@@ -207,30 +231,21 @@ void tft_fill_rectangle(int x1, int x2, int y1, int y2, uint8_t r, uint8_t g, ui
  // set_reg_bits(GPIOA_ODR,D_CX_BIT); /* send the parameter */
  DOWN_TFT_NSS;
  UP_CX;
-#if 0
-   {
-    uint8_t rgb[300];
-    int i;
-    for(i=0;i<300;i+=3)
+  {
+      int i;
+      for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
       {
-    rgb[i+0]=r;
-    rgb[1+i]=g;
-    rgb[2+i]=b;
-      }
-     i=(((x2-x1)+1)*((y2-y1)+1))*3;
-    spi1_master_send_bytes_async_circular(rgb,(300>i?i:300),i);
-   }
-#else
-  {
-    int i;
-     for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
-  {
-       spi1_master_send_byte_sync(r);
-       spi1_master_send_byte_sync(g);
-       spi1_master_send_byte_sync(b);
-   }
-}
+#if CONFIG_WOOKEY_V1
+          spi1_master_send_byte_sync(r);
+          spi1_master_send_byte_sync(g);
+          spi1_master_send_byte_sync(b);
+#elif CONFIG_WOOKEY_V2
+          spi2_master_send_byte_sync(r);
+          spi2_master_send_byte_sync(g);
+          spi2_master_send_byte_sync(b);
 #endif
+      }
+  }
 UP_TFT_NSS;
 }
 
@@ -251,17 +266,30 @@ void tft_invert_rectangle(int x1,int x2,int y1,int y2)
 
         DOWN_TFT_NSS;
         UP_CX;
+#if CONFIG_WOOKEY_V1
         spi1_master_send_byte_sync(0);//dummy READ as in spec p116
+#elif CONFIG_WOOKEY_V2
+        spi2_master_send_byte_sync(0);//dummy READ as in spec p116
+#endif
         for(k=0;k<3*sup;k++)
           {
+#if CONFIG_WOOKEY_V1
             stock[k]=spi1_master_send_byte_sync(0);//0 is dummy data
+#elif CONFIG_WOOKEY_V2
+            stock[k]=spi2_master_send_byte_sync(0);//0 is dummy data
+#endif
+
           }
         tft_setxy(i,i+sup,j,j+1);
         tft_send_command(0x2c);//memory write
         DOWN_TFT_NSS;
         UP_CX;
         for(k=0;k<3*sup;k++)
+#if CONFIG_WOOKEY_V1
           spi1_master_send_byte_sync((stock[k])^255);//Ensure the 3 lsb are 0
+#elif CONFIG_WOOKEY_V2
+          spi2_master_send_byte_sync((stock[k])^255);//Ensure the 3 lsb are 0
+#endif
         UP_TFT_NSS;
         }
   }
@@ -277,9 +305,15 @@ void tft_send_image(int x1,int x2, int y1,int y2, uint8_t *data)
   UP_CX;
   for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
     {
+#if CONFIG_WOOKEY_V1
       spi1_master_send_byte_sync(data[3*i]);
       spi1_master_send_byte_sync(data[3*i+1]);
       spi1_master_send_byte_sync(data[3*i+2]);
+#elif CONFIG_WOOKEY_V2
+      spi2_master_send_byte_sync(data[3*i]);
+      spi2_master_send_byte_sync(data[3*i+1]);
+      spi2_master_send_byte_sync(data[3*i+2]);
+#endif
     }
   UP_TFT_NSS;
 }
@@ -334,15 +368,27 @@ void tft_putc(char c)
             {
               if(font[star_pos+j]&(1<<k))
               {
+#if CONFIG_WOOKEY_V1
                 spi1_master_send_byte_sync(fg_color[0]);
                 spi1_master_send_byte_sync(fg_color[1]);
                 spi1_master_send_byte_sync(fg_color[2]);
+#elif CONFIG_WOOKEY_V2
+                spi2_master_send_byte_sync(fg_color[0]);
+                spi2_master_send_byte_sync(fg_color[1]);
+                spi2_master_send_byte_sync(fg_color[2]);
+#endif
               }
               else
               {
+#if CONFIG_WOOKEY_V1
                 spi1_master_send_byte_sync(bg_color[0]);
                 spi1_master_send_byte_sync(bg_color[1]);
                 spi1_master_send_byte_sync(bg_color[2]);
+#else
+                spi2_master_send_byte_sync(bg_color[0]);
+                spi2_master_send_byte_sync(bg_color[1]);
+                spi2_master_send_byte_sync(bg_color[2]);
+#endif
               }
               size_printed++;
             }
@@ -389,9 +435,15 @@ void tft_rle_image(int x, int y,int width, int height, const uint8_t *colormap,
         for(nb=0;nb<data[i+1];nb++)
         {
                 /* the two least significant bits are ignored */
+#if CONFIG_WOOKEY_V1
                 spi1_master_send_byte_sync(colormap[3*data[i]]&~3);
                 spi1_master_send_byte_sync(colormap[3*data[i]+1]&~3);
                 spi1_master_send_byte_sync(colormap[3*data[i]+2]&~3);
+#else
+                spi2_master_send_byte_sync(colormap[3*data[i]]&~3);
+                spi2_master_send_byte_sync(colormap[3*data[i]+1]&~3);
+                spi2_master_send_byte_sync(colormap[3*data[i]+2]&~3);
+#endif
         }
   }
   UP_TFT_NSS;
