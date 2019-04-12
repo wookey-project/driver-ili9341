@@ -401,11 +401,23 @@ void tft_putc(char c)
         current_posx+=char_width;
 
 }
+
+static bool tft_is_printable(char c)
+{
+    if (c> 31 && c < 127) {
+        return true;
+    }
+    return false;
+}
+
 int tft_puts(const char *s)
 {
   const char *tmp=s;
-  while(*s)
-    tft_putc(*(s++));
+  while(*s) {
+      if (tft_is_printable(*s)) {
+        tft_putc(*(s++));
+      }
+  }
   return s-tmp;
 }
 
