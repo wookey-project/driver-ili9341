@@ -85,9 +85,9 @@ uint8_t tft_early_init(void)
         dev.gpios[1].pupd         = GPIO_PULLUP;
         dev.gpios[1].type         = GPIO_PIN_OTYPER_PP;
         dev.gpios[1].speed        = GPIO_PIN_VERY_HIGH_SPEED;
-#if 0
+#ifndef CONFIG_WOOKEY
     /* DECLARE TFT NSS GPIO_PC4  */
-    DO NOT USE THIS FOR WOOKEY BOARD!
+        /* DO NOT USE THIS FOR WOOKEY BOARD! */
         dev.gpios[1].mask         = GPIO_MASK_SET_MODE | GPIO_MASK_SET_PUPD | GPIO_MASK_SET_TYPE | GPIO_MASK_SET_SPEED;
         dev.gpios[1].kref.port    = ili9341_dev_infos.gpios[TFT_NSS].port;
         dev.gpios[1].kref.pin     = ili9341_dev_infos.gpios[TFT_NSS].pin;
