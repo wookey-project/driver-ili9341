@@ -3,7 +3,4 @@ config USR_DRV_ILI9341
   default y
   ---help---
   Support for ILI9341 hardware Screen driver.
-config USR_DRV_ILI9341_CFLAGS
-  string
-  default " -I../../drivers/boards/wookey/ili9341/api " if USR_DRV_ILI9341
 

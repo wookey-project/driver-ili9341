@@ -1,13 +1,15 @@
 #include "autoconf.h"
 #include "libc/types.h"
-#include "api/libtft.h"
-#include "api/libspi.h"
 #include "libc/stdio.h"
 #include "libc/nostd.h"
 #include "libc/string.h"
 #include "libc/regutils.h"
-#include "font.h"
 #include "libc/syscall.h"
+
+#include "libtft.h"
+#include "libspi.h"
+
+#include "font.h"
 
 #include "generated/ili9341.h"
 
