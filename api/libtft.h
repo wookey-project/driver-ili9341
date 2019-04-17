@@ -1,7 +1,7 @@
 #ifndef LIBTFT_H_
 #define LIBTFT_H_
 
-#include "api/types.h"
+#include "libc/types.h"
 
 
 uint8_t tft_early_init(void);
