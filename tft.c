@@ -109,9 +109,9 @@ uint8_t tft_init(void)
     sys_cfg(CFG_GPIO_SET,(uint8_t)((ili9341_dev_infos.gpios[TFT_RST].port<<4)+
             ili9341_dev_infos.gpios[TFT_RST].pin),0);
 #if CONFIG_WOOKEY_V1
-    spi1_init();
+    spi1_init(SPI_BAUDRATE_6MHZ);
 #elif CONFIG_WOOKEY_V2
-    spi2_init();
+    spi2_init(SPI_BAUDRATE_6MHZ);
 #endif
     sys_sleep(10, SLEEP_MODE_DEEP);
 #if CONFIG_WOOKEY_V1
