@@ -470,9 +470,9 @@ void tft_rle_image(int x, int y,int width, int height, const uint8_t *colormap,
 void screen_save_nss_status()
 {
   int ret;
-  ret=sys_cfg(CFG_GPIO_GET,(uint8_t)(ili9341_dev_infos.gpios[TFT_NSS].port<<4 +ili9341_dev_infos.gpios[TFT_NSS].pin),&nss);
+  ret=sys_cfg(CFG_GPIO_GET,(uint8_t)((ili9341_dev_infos.gpios[TFT_NSS].port<<4) +ili9341_dev_infos.gpios[TFT_NSS].pin),&nss);
   if (ret != SYS_E_DONE) {
-    log_printf("unable to read TFT NSS pin value : %x\n", strerror(ret));
+    aprintf("unable to read TFT NSS pin value : %x\n", strerror(ret));
   }
   //UP_TFT_NSS;
 }
