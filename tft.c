@@ -255,7 +255,6 @@ void tft_invert_rectangle(int x1,int x2,int y1,int y2)
 {
   uint8_t stock[3*TFT_BUFSIZ];
   int i,j;
- // tft_fill_rectangle_unlocked(x1,x2,y1,y2,255,0,0);
   for(j=y1;j<=y2;j++)
  {
     int sup=0;
