@@ -1,6 +1,9 @@
 The ILI9341 driver
 ==================
 
+.. highlight:: c
+
+
 This is the ILI9341 Touchscreen TFT part implementation driver.
 
 About the ILI8341 driver
