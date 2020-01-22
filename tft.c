@@ -110,14 +110,18 @@ uint8_t tft_init(void)
             ili9341_dev_infos.gpios[TFT_RST].pin),0);
 #if CONFIG_WOOKEY_V1
     spi1_init(SPI_BAUDRATE_6MHZ);
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
     spi2_init(SPI_BAUDRATE_6MHZ);
+#else
+# error "unkown board layout"
 #endif
     sys_sleep(10, SLEEP_MODE_DEEP);
 #if CONFIG_WOOKEY_V1
     spi1_enable();
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
     spi2_enable();
+#else
+# error "unkown board layout"
 #endif
 
   /* end RESET EVERYTHING */
@@ -170,7 +174,7 @@ int tft_send_command(uint8_t command)
   /* Wait for any already launched SPI transfert to complete */
 #if CONFIG_WOOKEY_V1
   while(spi1_is_busy());
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
   while(spi2_is_busy());
 #endif
   /*DOWN the D/CX line */
@@ -179,7 +183,7 @@ int tft_send_command(uint8_t command)
   /* send the command */
 #if CONFIG_WOOKEY_V1
   res=spi1_master_send_byte_sync(command);
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
   res=spi2_master_send_byte_sync(command);
 #endif
   UP_TFT_NSS;
@@ -192,7 +196,7 @@ int tft_send_param(uint8_t param)
   /* Wait for any already launched SPI transfert to complete */
 #if CONFIG_WOOKEY_V1
   while(spi1_is_busy());
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
   while(spi2_is_busy());
 #endif
   /*UP the D/CX line */
@@ -201,7 +205,7 @@ int tft_send_param(uint8_t param)
   /* send the parameter */
 #if CONFIG_WOOKEY_V1
   res=spi1_master_send_byte_sync(param);
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
   res=spi2_master_send_byte_sync(param);
 #endif
   UP_TFT_NSS;
@@ -241,7 +245,7 @@ void tft_fill_rectangle(int x1, int x2, int y1, int y2, uint8_t r, uint8_t g, ui
           spi1_master_send_byte_sync(r);
           spi1_master_send_byte_sync(g);
           spi1_master_send_byte_sync(b);
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
           spi2_master_send_byte_sync(r);
           spi2_master_send_byte_sync(g);
           spi2_master_send_byte_sync(b);
@@ -269,14 +273,14 @@ void tft_invert_rectangle(int x1,int x2,int y1,int y2)
         UP_CX;
 #if CONFIG_WOOKEY_V1
         spi1_master_send_byte_sync(0);//dummy READ as in spec p116
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
         spi2_master_send_byte_sync(0);//dummy READ as in spec p116
 #endif
         for(k=0;k<3*sup;k++)
           {
 #if CONFIG_WOOKEY_V1
             stock[k]=spi1_master_send_byte_sync(0);//0 is dummy data
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
             stock[k]=spi2_master_send_byte_sync(0);//0 is dummy data
 #endif
 
@@ -288,7 +292,7 @@ void tft_invert_rectangle(int x1,int x2,int y1,int y2)
         for(k=0;k<3*sup;k++)
 #if CONFIG_WOOKEY_V1
           spi1_master_send_byte_sync((stock[k])^255);//Ensure the 3 lsb are 0
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
           spi2_master_send_byte_sync((stock[k])^255);//Ensure the 3 lsb are 0
 #endif
         UP_TFT_NSS;
@@ -310,7 +314,7 @@ void tft_send_image(int x1,int x2, int y1,int y2, uint8_t *data)
       spi1_master_send_byte_sync(data[3*i]);
       spi1_master_send_byte_sync(data[3*i+1]);
       spi1_master_send_byte_sync(data[3*i+2]);
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
       spi2_master_send_byte_sync(data[3*i]);
       spi2_master_send_byte_sync(data[3*i+1]);
       spi2_master_send_byte_sync(data[3*i+2]);
@@ -373,7 +377,7 @@ void tft_putc(char c)
                 spi1_master_send_byte_sync(fg_color[0]);
                 spi1_master_send_byte_sync(fg_color[1]);
                 spi1_master_send_byte_sync(fg_color[2]);
-#elif CONFIG_WOOKEY_V2
+#elif defined(CONFIG_WOOKEY_V2) || defined(CONFIG_WOOKEY_V3)
                 spi2_master_send_byte_sync(fg_color[0]);
                 spi2_master_send_byte_sync(fg_color[1]);
                 spi2_master_send_byte_sync(fg_color[2]);
