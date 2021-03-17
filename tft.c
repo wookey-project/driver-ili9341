@@ -235,8 +235,8 @@ void tft_fill_rectangle(int x1, int x2, int y1, int y2, uint8_t r, uint8_t g, ui
 //Set B_RS dans P_RS
   tft_send_command(0x2C); //write
  // set_reg_bits(GPIOA_ODR,D_CX_BIT); /* send the parameter */
- DOWN_TFT_NSS;
  UP_CX;
+ DOWN_TFT_NSS;
   {
       int i;
       for(i=0;i<(((x2-x1)+1)*((y2-y1)+1));i++)
